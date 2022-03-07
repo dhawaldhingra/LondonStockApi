@@ -22,6 +22,7 @@
     <li>
       <a href="#about-the-project">About The Project</a>
       <ul>
+        <li><a href="#high-level-system-design">High Level System Design</a></li>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
@@ -29,10 +30,10 @@
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#database-schema">Database Schema</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#project-structure">Project Structure</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#api-working">API Working</a></li>
      </ol>
 </details>
 
@@ -97,6 +98,6 @@ The code has been maintained under a folder structure. Below is a brief descript
 ## API Working
 The controller allows for dependency injection of database handler and automapper. This takes place when the constructor for the API is invoked. The constructor of the API also initializes a simple implementation of cache for BrokerIds and Tickers. This is because the Tickers and BrokerIds are expected to remain static where as the stock prices will continously keep changing. Moreover, as we've very limited tickers and broker in live (aprox 5k), we can store them in memory without taking too much space. This list of tickers and broker ids is later on used for validation of any new trade information that is recevied by the API.
 As the database calls are expensive, caching of prices of various stocks was also considered however not pursued for MVP. This is because it poses additional challenges if the API were to run in a load balanced environment.
-The controller has three GET methods and one POST method. The details of these methods such as their routes, signatures etc can be found in the swagger spec and therefore has not been included in the Readme file.
+The controller has three GET methods and one POST method. The details of these methods such as their routes, signatures etc can be found in the swagger spec and therefore has not been included in the Readme file. The swagger spec for this API can be found <a href="https://github.com/dhawaldhingra/LondonStockApi/blob/master/LondonStockApi/OpenApiSwaggerSpec.json">here</a>.
 
 
