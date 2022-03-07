@@ -1,19 +1,14 @@
 # LondonStockApi
 
 
-
-<!-- PROJECT LOGO -->
 <br />
 <p align="center">
-  
 
   <h3 align="center">London Stock API</h3>
 
   <p align="center">
     A brief description about the API, project structure and code.
-    <br />
-    <a href="https://github.com/othneildrew/Best-README-Template"><strong>Explore the docs »</strong></a>
-    <br />
+   
     
   </p>
 </p>
@@ -33,7 +28,7 @@
     <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#database-schema">Database Schema</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
@@ -46,26 +41,23 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+The project contains implementation of a REST API called LondonStockApi and its underlying database. The API was built with below high level functional requirements in mind-
+1. Receive trade notifications from brokers(update stock prices).
+2. Publish prices of all the stocks.
+3. Publish price of a single stock.
+4. Publish price of a range of stocks.
 
-There are many great README templates available on GitHub, however, I didn't find one that really suit my needs so I created this enhanced one. I want to create a README template so amazing that it'll be the last one you ever need -- I think this is it.
-
-Here's why:
-* Your time should be focused on creating something amazing. A project that solves a problem and helps others
-* You shouldn't be doing the same tasks over and over like creating a README from scratch
-* You should implement DRY principles to the rest of your life :smile:
-
-Of course, no one template will serve all projects since your needs may be different. So I'll be adding more in the near future. You may also suggest changes by forking this repo and creating a pull request or opening an issue. Thanks to all the people have contributed to expanding this template!
-
-A list of commonly used resources that I find helpful are listed in the acknowledgements.
+Out of scope:
+1. Buy-Sell order matching- The API does not perform any sort of order purchase and sale order matching. It assumes that this will be done by the brokers.
+2. Validations on stock quantity- The API does not perform any validations on the stock quantity/availability. It again assumes that brokers will send only valid trades. 
 
 ### Built With
 
-This section should list any major frameworks that you built your project using. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
-* [Laravel](https://laravel.com)
-
+* The API was build on Visual Studio 2022 using .NET 6.0. 
+* It uses sqlite database which can be downloaded for free at <a href="https://www.sqlite.org/">SQLITE</a>. 
+* It utilizes Entity Framework for managing database queries. 
+* Swagger for testing and documenting
+* AutoMapper for  mapping between different class objects.
 
 
 <!-- GETTING STARTED -->
@@ -74,13 +66,17 @@ This section should list any major frameworks that you built your project using.
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
-### Prerequisites
+### Database Schema
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+In its very minimal form, the database consists of 4 tables. Below is a simple DB diagram showing the database structure-
+
+![picture alt](https://github.com/dhawaldhingra/LondonStockApi/blob/master/LondonStockApi/Database/Database%20structure.png "Database Schema")
+
+### Project Structure
+
+![picture alt](https://github.com/dhawaldhingra/LondonStockApi/blob/master/LondonStockApi/Project%20Structure.png "Project Structure")
+The code has been maintained under a folder structure. Below is a brief description of what can be found in each of the folders-
+* BindingModels : This contains custom classes that allow ASP.Net engine to  
 
 ### Installation
 
