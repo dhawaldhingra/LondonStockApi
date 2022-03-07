@@ -1,0 +1,272 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "London Stock Prices",
+    "description": "An API for fetching and updating the stock prices",
+    "contact": {
+      "name": "Dhawal Dhingra",
+      "url": "https://www.linkedin.com/in/dhawaldhingra/",
+      "email": "dhawal.dhingra@gmail.com"
+    },
+    "version": "v1"
+  },
+  "paths": {
+    "/api/Stocks/{ticker}": {
+      "get": {
+        "tags": [
+          "Stocks"
+        ],
+        "summary": "Gets price information of a single stock specified by its ticker",
+        "parameters": [
+          {
+            "name": "ticker",
+            "in": "path",
+            "description": "The ticker symbol for which price is requested",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StockPrice"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Stocks": {
+      "get": {
+        "tags": [
+          "Stocks"
+        ],
+        "summary": "Returns the prices of all the stocks",
+        "description": "This method does not support pagination and therefore may return large amount of data.",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StockPrice"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Stocks"
+        ],
+        "summary": "Receives transactions from brokers and updates the price of the specified stock",
+        "description": "This is a post request as opposed to a put request because this is being used by the brokers to post new trade deals even though for a functional requirement, this is being used to update the price of an existing stock",
+        "requestBody": {
+          "description": "Transaction details",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Transaction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    },
+    "/api/Stocks/GetMultiple/{tickers}": {
+      "get": {
+        "tags": [
+          "Stocks"
+        ],
+        "summary": "Gets the prices of the stocks for the tickers specified in the input",
+        "description": "The tickers should be passed as a comma separated list for this method",
+        "parameters": [
+          {
+            "name": "tickers",
+            "in": "path",
+            "description": "Comma separated ticker symbols",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StockPrice"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": { }
+      },
+      "StockPrice": {
+        "required": [
+          "current",
+          "high",
+          "low",
+          "ticker"
+        ],
+        "type": "object",
+        "properties": {
+          "ticker": {
+            "maxLength": 8,
+            "type": "string",
+            "description": "The unique ticker of the stock"
+          },
+          "current": {
+            "type": "number",
+            "description": "Current price of the stock",
+            "format": "float"
+          },
+          "high": {
+            "type": "number",
+            "description": "High price of the stock for the day",
+            "format": "float"
+          },
+          "low": {
+            "type": "number",
+            "description": "Low price of the stock for the dat",
+            "format": "float"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing a stock's price for the current day"
+      },
+      "Transaction": {
+        "required": [
+          "brokerId",
+          "brokerTransactionId",
+          "price",
+          "quantity",
+          "ticker"
+        ],
+        "type": "object",
+        "properties": {
+          "ticker": {
+            "maxLength": 8,
+            "type": "string",
+            "description": "Unique 3-8 letter ticker of the stock"
+          },
+          "price": {
+            "type": "number",
+            "description": "The price at which the stock was traded",
+            "format": "float"
+          },
+          "quantity": {
+            "type": "number",
+            "description": "The total number of stocks traded",
+            "format": "float"
+          },
+          "brokerId": {
+            "type": "integer",
+            "description": "The ID of the broker who is managing this particular trade",
+            "format": "int32"
+          },
+          "brokerTransactionId": {
+            "pattern": "^{[A-Z0-9]{8}-([A-Z0-9]{4}-){3}[A-Z0-9]{12}}$",
+            "type": "string",
+            "description": "The transaction ID used by the broker. \r\nThis a a Guid type field but sqlite has support for strings only. So, decalring this as a string but adding regex match to the annotations.\r\nThe Guid should be in upper case and surrounded in curly braces. E.g. {902C3392-67D7-43EA-A390-01BC5B7FE59E}"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Class representing the transaction details to be sent by an authorized broker"
+      }
+    }
+  }
+}
