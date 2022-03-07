@@ -50,6 +50,12 @@ The project contains implementation of a REST API called LondonStockApi and its 
 Out of scope:
 1. Buy-Sell order matching- The API does not perform any sort of order purchase and sale order matching. It assumes that this will be done by the brokers.
 2. Validations on stock quantity- The API does not perform any validations on the stock quantity/availability. It again assumes that brokers will send only valid trades. 
+3. Loggging of requests - For the purpose of MVP, request logging has not been enabled.
+
+### High Level System Design
+The system comprises of a REST API layer that connects to an underlying database. The REST API is written in ASP.Net and the database has been chosen to be an Sqlite database for the sake of MVP. EntityFramework core is being used to connect to the database however the Sqlite DB can  be switched to any preferred database and the API should still work as long as relevant database handler is supplied in the dependency injection. The project also uses Swagger CodeGen and UI for testing purposes.
+In its current MVP form, there is no load balancing involved but this is something that can be implemented on a separate layer for both API as well as the DB so as to allow high volume of traffic and icnrease resillience. 
+
 
 ### Built With
 
@@ -75,68 +81,22 @@ In its very minimal form, the database consists of 4 tables. Below is a simple D
 ### Project Structure
 
 ![picture alt](https://github.com/dhawaldhingra/LondonStockApi/blob/master/LondonStockApi/Project%20Structure.png "Project Structure")
+
 The code has been maintained under a folder structure. Below is a brief description of what can be found in each of the folders-
-* BindingModels : This contains custom classes that allow ASP.Net engine to  
-
-### Installation
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/your_username_/Project-Name.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```JS
-   const API_KEY = 'ENTER YOUR API';
-   ```
+* BindingModels : This contains custom classes that allow ASP.Net engine to the mapping between incoming request data and controller model. For the MVP, we've only one custom model binder that converts a comma seprated ticker strings into IEnumerable<string>.
+* Contollers : Contains the APIs/Controllers for the project. For MVP, we've only one API called Stocks.
+* Database : Contains the SQLITE DB containing the data for the project. Although it isn't strictly a part of the API, but it has been bundled with the project with some dummy data in it for ease of review and testing purpose.
+* DataModels : This folder contains data/class objects representing the tables in the database.
+* Models : This folder contains the class objects representing the Input/Outputs of the API.
+* Profiles : Contains AutoMapper profiles for mapping between Models and DataModels.
+* Repository : Contains the code for getting stocks data from and updating data in the database.
 
 
 
 <!-- USAGE EXAMPLES -->
-## Usage
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-See the [open issues](https://github.com/othneildrew/Best-README-Template/issues) for a list of proposed features (and known issues).
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
-
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+## API Working
+The controller allows for dependency injection of database handler and automapper. This takes place when the constructor for the API is invoked. The constructor of the API also initializes a simple implementation of cache for BrokerIds and Tickers. This is because the Tickers and BrokerIds are expected to remain static where as the stock prices will continously keep changing. Moreover, as we've very limited tickers and broker in live (aprox 5k), we can store them in memory without taking too much space. This list of tickers and broker ids is later on used for validation of any new trade information that is recevied by the API.
+As the database calls are expensive, caching of prices of various stocks was also considered however not pursued for MVP. This is because it poses additional challenges if the API were to run in a load balanced environment.
+The controller has three GET methods and one POST method. The details of these methods such as their routes, signatures etc can be found in the swagger spec and therefore has not been included in the Readme file.
 
 
