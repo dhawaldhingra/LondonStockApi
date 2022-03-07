@@ -110,10 +110,9 @@ namespace LondonStockApi.Controllers
         /// <param name="transaction">Transaction details</param>
         /// <returns>Http response indicating whether or not the request was successfully processed</returns>
         /// <remarks>
-        /// This is a put request as opposed to a post request because the main role of this operation is to update the current price of the stock.
-        /// Adding the transaction into the TransactionHistory table is a secondary NFR it is performing.
+        /// This is a post request as opposed to a put request because this is being used by the brokers to post new trade deals even though for a functional requirement, this is being used to update the price of an existing stock
         /// </remarks>
-        [HttpPut]
+        [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -160,7 +159,7 @@ namespace LondonStockApi.Controllers
             {
                 var transactionUpdate = _mapper.Map<DataModels.Transaction>(transaction);
                 transactionUpdate.Date = DateTime.Now;
-                var result = await _stockRepository.RecordTransaction(_mapper.Map<DataModels.Transaction>(transaction));
+                var result = await _stockRepository.RecordTransaction(transactionUpdate);
                 return Ok(result);
             }
             catch(Exception ex)
